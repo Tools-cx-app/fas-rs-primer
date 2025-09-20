@@ -142,6 +142,7 @@ jobs:
           zip -9 -rq "../../fas-rs-next(release).zip" .
           cd ${{ github.workspace }}/artifacts/fas-rs-next-extension(release)
           zip -9 -rq "../../fas-rs-next-extension(release).zip" .
+          cd ../..
       - name: Upload
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
