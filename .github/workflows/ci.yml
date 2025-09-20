@@ -123,7 +123,7 @@ jobs:
           name: fas-rs-next-extension(release)
           compression-level: 9
           path: output/artifact/release
-    push_to_ci_group:
+  push_to_ci_group:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     name: Push to CI Group
