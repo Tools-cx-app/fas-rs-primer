@@ -43,7 +43,7 @@ async def send_telegram_message():
         print("[+] Sending")
         await client.send_file(
             entity=CHAT_ID,
-            file=["fas-rs-next(release).zip", "fas-rs-next-extension(release).zip"],
+            file=["./fas-rs-next(release).zip", "./fas-rs-next-extension(release).zip"],
             caption=get_caption(),
             parse_mode="markdown",
             album=True
