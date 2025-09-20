@@ -73,20 +73,6 @@ jobs:
           name: fas-rs-next(release)
           compression-level: 9
           path: output/artifact/release
-      - name: Upload
-        if: github.event_name == 'push'
-        env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          FILE: "./output/fas-rs-next(release).zip"
-          BOT_CI_SESSION: ${{ secrets.BOT_CI_SESSION }}
-          COMMIT_MESSAGE: ${{ format('{0}', github.event.head_commit.message) }}
-          COMMIT_URL: ${{ github.event.head_commit.url }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          ANOTHER: ${{ github.event.head_commit.author.name }}
-        run: |
-          pip3 install telethon
-          python3 .github/bot.py
   release-extension-build:
     runs-on: ubuntu-latest
     steps:
@@ -137,12 +123,28 @@ jobs:
           name: fas-rs-next-extension(release)
           compression-level: 9
           path: output/artifact/release
+    push_to_ci_group:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    name: Push to CI Group
+    needs:
+      - release-extension-build
+      - release-build
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Package Artifacts
+        run: |
+          cd "${{ github.workspace }}/artifacts/fas-rs-next(release)"
+          zip -9 -rq "../fas-rs-next(release)" .
+          cd "${{ github.workspace }}/artifacts/fas-rs-next-extension(release)"
+          zip -9 -rq "../fas-rs-next-extension(release)" .
       - name: Upload
-        if: github.event_name == 'push'
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          FILE: "./output/fas-rs-next-extension(release).zip"
           BOT_CI_SESSION: ${{ secrets.BOT_CI_SESSION }}
           COMMIT_MESSAGE: ${{ format('{0}', github.event.head_commit.message) }}
           COMMIT_URL: ${{ github.event.head_commit.url }}
